@@ -2,6 +2,7 @@
 /// <reference path="../src/dataplat.chart.ts" />
 
 import getData from './test.data';
+import { DPDataSource } from '../src/widgets/dataplat.elements';
 
 let chartConstructor: any = null;
 

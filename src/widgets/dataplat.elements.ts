@@ -1,6 +1,6 @@
 ﻿/// <reference path="./dataplat.elements.d.ts" />
 
-class DPDataSource {
+export class DPDataSource {
     data: IDPDataSource;
     idParam: string;
     parentIdParam: string;
