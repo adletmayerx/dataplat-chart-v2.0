@@ -1,0 +1,151 @@
+:root {
+    --color-primary: #2e549e; /*Основной цвет*/
+    --color-main: #ffffff;
+    --color-head: #2e549e;
+    --color-head-text: #ffffff;
+    --color-primary-1: #eef1f7;
+    --color-primary-2: #e6eaf3;
+    --color-primary-3: #dee4ef;
+    --color-primary-4: #d5ddec;
+    --color-primary-5: #cbd4e7;
+    --color-primary-6: #96a9ce;
+    --color-primary-7: #7790c0;
+    --color-primary-8: #6d87bb;
+    --color-primary-9: #193875;
+    --color-primary-10: #0c2452;
+    --color-secondary: #212529; /*Вторичный цвет */
+    --color-secondary-00: #f2f2f2;
+    --color-secondary-0: #edeeee;
+    --color-secondary-1: #e4e5e5;
+    --color-secondary-2: #dbdcdd;
+    --color-secondary-3: #cacbcc;
+    --color-secondary-4: #bcbebf;
+    --color-secondary-5: #909294;
+    --color-secondary-6: #7a7c7f;
+    --color-secondary-7: #6f7174;
+    --color-green: #639d65;
+    --color-green-1: #92ba93;
+    --color-green-2: #428b45;
+    --color-green-3: #236826;
+    --color-red: #ff153f;
+    --color-red-light: #fff4f6;
+    --color-red-1: #fc9b9b;
+    --color-red-2: #ff2626;
+    --color-red-3: #bf0000;
+    --shadow-context: 3px 2px 7px var(--color-secondary);
+    --color-translucent: rgba(0, 0, 0, 0.5);
+    --color-yellow: #ffa615;
+}
+
+html,
+body {
+    font-size: 14px;
+    font-family: 'Ubuntu', sans-serif;
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    color: #333;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    outline: none;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    scrollbar-color: var(--color-primary-6) transparent;
+    scrollbar-width: thin;
+}
+
+*::-webkit-scrollbar {
+    width: 15px;
+}
+
+*::-webkit-scrollbar-track {
+    background-color: transparent;
+    border-radius: 100px;
+}
+
+*::-webkit-scrollbar-thumb {
+    border-radius: 100px;
+    border: 5px solid transparent;
+    background-clip: content-box;
+    background-color: var(--color-primary-6);
+}
+
+ul {
+    list-style: none; /*Отменяет маркировки в списке */
+    margin-bottom: 0; /*Убираем нижний отступ у списка*/
+}
+
+a {
+    text-decoration: none; /*Отменяет стили в ссылках*/
+}
+
+button {
+    background: transparent;
+    border: none;
+}
+
+.body {
+    width: 100%;
+    height: 100%;
+    display: flex;
+}
+
+.dp-tabs-content[data-action='chart'] {
+    flex-direction: row;
+}
+
+.dp-chart-window {
+    flex-shrink: 1;
+    width: 100%;
+    height: calc(100% - 350px);
+    padding: 50px;
+}
+
+.dp-chart-setting {
+    padding: 24px 10px;
+    height: 100%;
+    overflow: auto;
+}
+
+.dp-chart-setting-content {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.dp-setting-form-row {
+    margin-bottom: 19px;
+}
+
+.dp-top-tab-contents {
+    overflow: hidden;
+}
+
+.dp-tabs-content-chart {
+    flex-shrink: 1;
+    width: 100%;
+}
+
+.select-points {
+    display: flex;
+    gap: 10px;
+}
+
+.select-points-button {
+    height: 33px;
+    background-color: var(--color-head);
+    color: var(--color-head-text);
+    padding: 5px 15px;
+    border-radius: 50px;
+    cursor: pointer;
+}
+
+.show-chart {
+    display: block;
+}
+
+.hide-chart {
+    display: none;
+}

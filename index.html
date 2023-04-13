@@ -3,11 +3,447 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="stylesheet" href="./src/css/chart.css" />
+    <link rel="stylesheet" href="./src/css/dataplat.css" />
+    <link rel="stylesheet" href="./src/css/styles.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + TS</title>
+    <title>DPChart</title>
   </head>
   <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.ts"></script>
+    <script src="/src/widgets/dataplat.elements.ts"></script>
+    <div class="body">
+      <dataplat-menu id="menu" data-open="true">
+          <div class="dp-main__menu-tabs" data-open="false">
+
+          </div>
+          <div class="dp-main__menu-tab-content" data-open="true">
+              <div class="dp-main__menu-content">
+                  <dataplat-treeview id="treeview"></dataplat-treeview>
+              </div>
+          </div>
+      </dataplat-menu>
+      <div class="dp-main__content">
+          <dataplat-tab tab="top" main="chart">
+              <ul class="dp-tabs-list prep-tabsstrip-list toolbar-tabs-list">                
+                  <li class="dp-tabs-link" data-active="true">                               
+                      <button data-action="chart" class="dp-tabs-button">
+                          <span class="dp-tab-button-name">                                  
+                              График                                                          
+                          </span>                                                            
+                      </button>                                                              
+                  </li>                                                                                                                                        
+              </ul>                                                                          
+              <div class="dp-top-tab-contents">                                              
+                  <div data-action="chart" class="dp-tabs-content" data-active="true">
+                      <div class="dp-tabs-content-chart">
+                          <dataplat-toolbar id="tools">
+                              <button class="dp-icon-button" title="Сохранить" data-action="save">
+                                  <svg class="dp-icon-button-svg">
+                                      <use href="./images/svg/dpicons.svg#ok"></use>
+                                  </svg>
+                              </button>
+                              <dataplat-checkbox-button value="false" icon="gridlinesvertical" title="По вертикали" action="gridlinevertical"></dataplat-checkbox-button>
+                              <dataplat-checkbox-button value="false" icon="gridlines" title="По горизонтали" action="gridline"></dataplat-checkbox-button>
+                              <dataplat-checkbox-button value="false" icon="close" title="Удалить" action="gridLineDelete"></dataplat-checkbox-button>
+                              <button class="dp-icon-button" title="Очистить" data-action="gridLineClean">
+                                  <svg class="dp-icon-button-svg">
+                                      <use href="/images/svg/dpicons.svg#clean"></use>
+                                  </svg>
+                              </button>
+                          </dataplat-toolbar>
+                          <div id="line" class="dp-chart-window">
+                              <dataplat-chart>
+                              </dataplat-chart> 
+                          </div>
+                          <div id="multi-line" class="dp-chart-window">
+                              <dataplat-chart>
+                              </dataplat-chart> 
+                          </div>
+                          <div id="line-null" class="dp-chart-window">
+                              <dataplat-chart>
+                              </dataplat-chart> 
+                          </div>
+                          <div id="scatter" class="dp-chart-window">
+                              <dataplat-chart>
+                              </dataplat-chart> 
+                          </div>
+                          <div id="column" class="dp-chart-window">
+                              <dataplat-chart>
+                              </dataplat-chart> 
+                          </div>
+                          <div id="bar" class="dp-chart-window">
+                              <dataplat-chart>
+                              </dataplat-chart> 
+                          </div>
+                          <div id="radar" class="dp-chart-window">
+                              <dataplat-chart>
+                              </dataplat-chart> 
+                          </div>
+                      </div>
+                      <div class="dp-vertical-tab-container">
+                          <dataplat-tab tab='right' main='setting'  class='dp-vertical-tab-chart'>
+                              <div class='dp-vertical-tab-contents' data-active='true'>
+                                  <div class='dp-tab-content' data-action='setting' data-active='true'>
+                                      <div class="dp-chart-setting">
+                                          <div id="points" class="dp-chart-setting-region">
+                                              <dataplat-region id="region" state="true" text="Количество точек" class="dp-region-max">
+                                                  <div class="dp-chart-setting-content">
+                                                      <div class="select-points">
+                                                          <dataplat-select clearButton="true" dataTextField="name" dataValueField="id" id="select-points" ></dataplat-select>
+                                                          <button id="select-button" class="select-points-button">Render</button>
+                                                      </div>
+                                                  </div>
+                                              </dataplat-region> 
+                                          </div>
+                                          <div class="dp-chart-setting-region">
+                                              <dataplat-region id="region" state="false" text="Заголовок диаграммы" class="dp-region-max">
+                                                  <div class="dp-chart-setting-content">
+                                                      <div class="dp-setting-form-row">
+                                                          <input class="dp-input" type="text" name="title" id="titleName">
+                                                      </div>
+                                                      <div class="dp-setting-form-row">
+                                                          <p class="dp-form-row-label">Выбрать расположение заголовка по вертикали</p>
+                                                          <dataplat-select dataTextField="name" dataValueField="id" id="titlePositionVertical"></dataplat-select>
+                                                      </div>
+                                                      <div class="dp-setting-form-row">
+                                                          <p class="dp-form-row-label">Выбрать расположение заголовка по горизонтали</p>
+                                                          <dataplat-select dataTextField="name" dataValueField="id" id="titlePositionHorizontal"></dataplat-select>
+                                                      </div>
+                                                      <div class="dp-setting-form-row">
+                                                          <p class="dp-form-row-label">Цвет заголовка</p>
+                                                          <input class="dp-input-color" type="color" name="title" id="titleColor">
+                                                      </div>
+                                                      <div class="dp-setting-form-row">
+                                                          <p class="dp-form-row-label">Размер шрифта</p>
+                                                          <dataplat-number id="titleSize"></dataplat-number>
+                                                      </div>
+                                                      <div class="dp-setting-form-row">
+                                                          <p class="dp-form-row-label">Начертание шрифта</p>
+                                                          <dataplat-select dataTextField="name" dataValueField="id" id="titleWeight"></dataplat-select>
+                                                      </div>
+                                                      <div class="dp-setting-form-row">
+                                                          <p class="dp-form-row-label">Стиль текста</p>
+                                                          <dataplat-select dataTextField="name" dataValueField="id" id="titleStyle"></dataplat-select>
+                                                      </div>
+                                                  </div>
+                                              </dataplat-region> 
+                                          </div>
+                                          <div class="dp-chart-setting-region">
+                                              <dataplat-region id="region-legend" state="false" text="Легенда" class="dp-region-max">
+                                                  <div class="dp-chart-setting-content">
+                                                      <div class="dp-setting-form-row">
+                                                          <dataplat-checkbox value="false" text="Отображать легенду" id="legendShow"></dataplat-checkbox>
+                                                      </div>
+                                                      <div class="dp-setting-form-row">
+                                                          <p class="dp-form-row-label">Положение легенды по вертикали</p>
+                                                          <dataplat-select dataTextField="name" dataValueField="id" id="legendVerticalAlign"></dataplat-select>
+                                                      </div>
+                                                      <div class="dp-setting-form-row">
+                                                          <p class="dp-form-row-label">Положение легенды по горизонтали</p>
+                                                          <dataplat-select dataTextField="name" dataValueField="id" id="legendHorizontalAlign"></dataplat-select>
+                                                      </div>
+                                                      <div class="dp-setting-form-row">
+                                                          <p class="dp-form-row-label">Размер шрифта легенды</p>
+                                                          <dataplat-number id="legendSize"></dataplat-number>
+                                                      </div>
+                                                      <div class="dp-setting-form-row">
+                                                          <p class="dp-form-row-label">Начертание шрифта легенды</p>
+                                                          <dataplat-select dataTextField="name" dataValueField="id" id="legendWeight"></dataplat-select>
+                                                      </div>
+                                                      <div class="dp-setting-form-row">
+                                                          <p class="dp-form-row-label">Стиль текста легенды</p>
+                                                          <dataplat-select dataTextField="name" dataValueField="id" id="legendStyle"></dataplat-select>
+                                                      </div>
+                                                  </div>
+                                              </dataplat-region> 
+                                          </div>
+                                          <div class="dp-chart-setting-region">
+                                              <dataplat-region id="region-legend" state="false" text="Редактирование Оси X" class="dp-region-max">
+                                                  <div class="dp-chart-setting-content">
+                                                      <p class="dp-form-row-label">Название заголовка</p>
+                                                      <div class="dp-setting-form-row">
+                                                          <input class="dp-input" type="text" name="title" id="axisXTitle">
+                                                      </div>
+                                                      <div class="dp-setting-form-row">
+                                                          <p class="dp-form-row-label">Цвет заголовка</p>
+                                                          <input class="dp-input-color" type="color" name="title" id="axisXTitleColor">
+                                                      </div>    
+                                                      <div class="dp-setting-form-row">
+                                                          <p class="dp-form-row-label">Размер шрифта заголовка</p>
+                                                          <dataplat-number id="axisXTitleSize"></dataplat-number>
+                                                      </div>
+                                                      <div class="dp-setting-form-row">
+                                                          <p class="dp-form-row-label">Начертание шрифта заголовка</p>
+                                                          <dataplat-select dataTextField="name" dataValueField="id" id="axisXTitleWeight"></dataplat-select>
+                                                      </div>
+                                                      <div class="dp-setting-form-row">
+                                                          <p class="dp-form-row-label">Стиль текста заголовка</p>
+                                                          <dataplat-select dataTextField="name" dataValueField="id" id="axisXTitleStyle"></dataplat-select>
+                                                      </div>
+                                                      <div class="dp-setting-form-row">
+                                                          <p class="dp-form-row-label">Цвет значений</p>
+                                                          <input class="dp-input-color" type="color" name="title" id="axisXLabelColor">
+                                                      </div>
+                                                      <div class="dp-setting-form-row">
+                                                          <p class="dp-form-row-label">Размер шрифта значений</p>
+                                                          <dataplat-number id="axisXLabelSize"></dataplat-number>
+                                                      </div>
+                                                      <div class="dp-setting-form-row">
+                                                          <p class="dp-form-row-label">Цвет оси X</p>
+                                                          <input class="dp-input-color" type="color" name="title" id="axisXColor">
+                                                      </div>
+                                                      <div class="dp-setting-form-row">
+                                                          <p class="dp-form-row-label">Угол наклона значений</p>
+                                                          <dataplat-number max="360" min="0" value="0" id="axisXAngle"></dataplat-number>
+                                                      </div>
+                                                      <div class="dp-setting-form-row">
+                                                          <p class="dp-form-row-label">Количество знаков после запятой</p>
+                                                          <dataplat-number max="9" min="0" value="0" id="axisXSymbols"></dataplat-number>
+                                                      </div>
+                                                  </div>
+                                              </dataplat-region> 
+                                          </div>
+                                          <div class="dp-chart-setting-region">
+                                              <dataplat-region id="region-legend" state="false" text="Редактирование Оси Y" class="dp-region-max">
+                                                  <div class="dp-chart-setting-content">
+                                                      <div class="dp-setting-form-row">
+                                                          <p class="dp-form-row-label">Выберите ось для редактирования</p>
+                                                          <dataplat-select dataTextField="name" dataValueField="id" id="axisYSelect"></dataplat-select>
+                                                      </div>
+                                                      <!-- <div class="dp-setting-form-row">
+                                                          <dataplat-checkbox value="false" text="Отобразить ось" id="axisYShow"></dataplat-checkbox>
+                                                      </div> -->
+                                                      <p class="dp-form-row-label">Название заголовка</p>
+                                                      <div class="dp-setting-form-row">
+                                                          <input class="dp-input" type="text" name="title" id="axisYTitle">
+                                                      </div>
+                                                      <div class="dp-setting-form-row">
+                                                          <p class="dp-form-row-label">Цвет заголовка</p>
+                                                          <input class="dp-input-color" type="color" name="title" id="axisYTitleColor">
+                                                      </div>    
+                                                      <div class="dp-setting-form-row">
+                                                          <p class="dp-form-row-label">Размер шрифта заголовка</p>
+                                                          <dataplat-number id="axisYTitleSize"></dataplat-number>
+                                                      </div>
+                                                      <div class="dp-setting-form-row">
+                                                          <p class="dp-form-row-label">Начертание шрифта заголовка</p>
+                                                          <dataplat-select dataTextField="name" dataValueField="id" id="axisYTitleWeight"></dataplat-select>
+                                                      </div>
+                                                      <div class="dp-setting-form-row">
+                                                          <p class="dp-form-row-label">Стиль текста заголовка</p>
+                                                          <dataplat-select dataTextField="name" dataValueField="id" id="axisYTitleStyle"></dataplat-select>
+                                                      </div>
+                                                      <div class="dp-setting-form-row">
+                                                          <p class="dp-form-row-label">Цвет значений</p>
+                                                          <input class="dp-input-color" type="color" name="title" id="axisYLabelColor">
+                                                      </div>
+                                                      <div class="dp-setting-form-row">
+                                                          <p class="dp-form-row-label">Размер шрифта значений</p>
+                                                          <dataplat-number id="axisYLabelSize"></dataplat-number>
+                                                      </div>
+                                                      <div class="dp-setting-form-row">
+                                                          <p class="dp-form-row-label">Цвет оси Y</p>
+                                                          <input class="dp-input-color" type="color" name="title" id="axisYColor">
+                                                      </div>
+                                                      <div class="dp-setting-form-row">
+                                                          <p class="dp-form-row-label">Угол наклона значений</p>
+                                                          <dataplat-number max="360" min="0" value="0" id="axisYAngle"></dataplat-number>
+                                                      </div>
+                                                      <div class="dp-setting-form-row">
+                                                          <p class="dp-form-row-label">Количество знаков после запятой</p>
+                                                          <dataplat-number max="9" min="0" value="0" id="axisYSymbols"></dataplat-number>
+                                                      </div>
+                                                  </div>
+                                              </dataplat-region> 
+                                          </div>
+                                          <div class="dp-chart-setting-region">
+                                              <dataplat-region id="region-legend" state="false" text="Отображения графика" class="dp-region-max">
+                                                  <div class="dp-chart-setting-content">
+                                                      <div class="dp-setting-form-row" id="selectViewCurrentMode">
+                                                          <p class="dp-form-row-label">Выберите график для редактирования</p>
+                                                          <dataplat-select dataTextField="name" dataValueField="id" id="lineCurrent"></dataplat-select>
+                                                      </div>
+                                                      <div class="dp-setting-form-row">
+                                                          <p class="dp-form-row-label">Тип линии тренда</p>
+                                                          <dataplat-select dataTextField="name" dataValueField="id" id="lineType"></dataplat-select>
+                                                      </div>
+                                                      <div class="dp-setting-form-row">
+                                                          <p class="dp-form-row-label">Выберите толщину линии</p>
+                                                          <dataplat-select dataTextField="name" dataValueField="id" id="lineThickness"></dataplat-select>
+                                                      </div>
+                                                      <div class="dp-setting-form-row">
+                                                          <p class="dp-form-row-label">Выберите цвет линии</p>
+                                                          <input class="dp-input-color" type="color" name="title" id="lineColor">
+                                                      </div> 
+                                                      <div class="dp-setting-form-row">
+                                                          <dataplat-checkbox value="false" text="Транслировать цвет на индивидуальную шкалу показателя" id="lineColorSync"></dataplat-checkbox>
+                                                      </div>
+                                                      <div class="dp-setting-form-row">
+                                                          <p class="dp-form-row-label">Режим сглаживания</p>
+                                                          <dataplat-switch id="lineModeSpline" value="false"></dataplat-switch>
+                                                      </div> 
+                                                      <div class="dp-setting-form-row">
+                                                          <p class="dp-form-row-label">Режим ступенчатый</p>
+                                                          <dataplat-switch id="lineModeStep" value="false"></dataplat-switch>
+                                                      </div> 
+                                                      <div class="dp-setting-form-row">
+                                                          <p class="dp-form-row-label">Количество знаков после запятой</p>
+                                                          <dataplat-number max="9" min="0" value="0" id="lineSymbols"></dataplat-number>
+                                                      </div>
+                                                  </div>
+                                              </dataplat-region> 
+                                          </div>
+                                          <div class="dp-chart-setting-region">
+                                              <dataplat-region id="region-legend" state="false" text="Фон диаграммы" class="dp-region-max">
+                                                  <div class="dp-chart-setting-content">
+                                                      <div class="dp-setting-form-row">
+                                                          <p class="dp-form-row-label">Цвет фона диаграммы</p>
+                                                          <input class="dp-input-color" type="color" name="title" id="backgroundColor">
+                                                      </div>
+                                                      <div class="dp-setting-form-row">
+                                                          <p class="dp-form-row-label">Цвет подложки диаграммы</p>
+                                                          <input class="dp-input-color" type="color" name="title" id="backgroundParentColor">
+                                                      </div> 
+                                                  </div>
+                                              </dataplat-region> 
+                                          </div>
+                                          <div class="dp-chart-setting-region">
+                                              <dataplat-region id="region-legend" state="false" text="Маркеры" class="dp-region-max">
+                                                  <div class="dp-chart-setting-content">
+                                                      <div class="dp-setting-form-row">
+                                                          <dataplat-checkbox value="false" text="Отображать маркеры" id="markerShow"></dataplat-checkbox>
+                                                      </div>
+                                                      <div class="dp-setting-form-row">
+                                                          <p class="dp-form-row-label">Выберите график для редактирования</p>
+                                                          <dataplat-select dataTextField="name" dataValueField="id" id="markerLine"></dataplat-select>
+                                                      </div>
+                                                      <div class="dp-setting-form-row">
+                                                          <p class="dp-form-row-label">Тип маркера</p>
+                                                          <dataplat-select dataTextField="name" dataValueField="id" id="markerType"></dataplat-select>
+                                                      </div>
+                                                      <div class="dp-setting-form-row">
+                                                          <p class="dp-form-row-label">Цвет маркера</p>
+                                                          <input class="dp-input-color" type="color" name="title" id="markerColor">
+                                                      </div>  
+                                                      <div class="dp-setting-form-row">
+                                                          <p class="dp-form-row-label">Размер маркера</p>
+                                                          <dataplat-number id="markerSize"></dataplat-number>
+                                                      </div>  
+                                                  </div>
+                                              </dataplat-region> 
+                                          </div>
+                                          <div class="dp-chart-setting-region">
+                                              <dataplat-region id="region-legend" state="false" text="Заливка" class="dp-region-max">
+                                                  <div class="dp-chart-setting-content">
+                                                      <div class="dp-setting-form-row">
+                                                          <dataplat-checkbox value="false" text="Заливка диаграммы" id="fillEnable"></dataplat-checkbox>
+                                                      </div>
+                                                      <div class="dp-setting-form-row">
+                                                          <p class="dp-form-row-label">Выберите график для редактирования</p>
+                                                          <dataplat-select dataTextField="name" dataValueField="id" id="fillLine"></dataplat-select>
+                                                      </div>
+                                                      <div class="dp-setting-form-row">
+                                                          <p class="dp-form-row-label">Цвет заливки</p>
+                                                          <input class="dp-input-color" type="color" name="title" id="fillColor">
+                                                      </div> 
+                                                  </div>
+                                              </dataplat-region> 
+                                          
+                                          </div>
+                                          <div class="dp-chart-setting-region">
+                                              <dataplat-region id="region-legend" state="false" text="Управление сеткой" class="dp-region-max">
+                                                  <div class="dp-chart-setting-content">
+                                                      <div class="dp-setting-form-row">
+                                                          <dataplat-checkbox value="false" text="Сетка по оси X" id="gridX"></dataplat-checkbox>
+                                                      </div>
+                                                      <div class="dp-setting-form-row">
+                                                          <dataplat-checkbox disabled="true" value="false" text="Сетка по оси Y" id="gridY"></dataplat-checkbox>
+                                                      </div>
+                                                      <div class="dp-setting-form-row">
+                                                          <p class="dp-form-row-label">Цвет сетки по X</p>
+                                                          <input class="dp-input-color" type="color" name="title" id="gridColorX">
+                                                      </div>  
+                                                      <div class="dp-setting-form-row">
+                                                          <p class="dp-form-row-label">Цвет сетки по Y</p>
+                                                          <input class="dp-input-color" type="color" name="title" id="gridColorY">
+                                                      </div>  
+                                                      <div class="dp-setting-form-row">
+                                                          <p class="dp-form-row-label">Интервал сетки по оси X</p>
+                                                          <dataplat-number id="gridIntervalX"></dataplat-number>
+                                                      </div>
+                                                      <div class="dp-setting-form-row">
+                                                          <p class="dp-form-row-label">Интервал сетки по оси Y</p>
+                                                          <dataplat-number id="gridIntervalY"></dataplat-number>
+                                                      </div>  
+                                                  </div>
+                                              </dataplat-region> 
+                                          </div>
+                                          <div class="dp-chart-setting-region">
+                                              <dataplat-region id="region-legend" state="false" text="Некачественные данные" class="dp-region-max">
+                                                  <div class="dp-chart-setting-content">
+                                                      <div class="dp-setting-form-row">
+                                                          <p class="dp-form-row-label">Тип линии для отображения</p>
+                                                          <dataplat-select dataTextField="name" dataValueField="id" id="nullLineType"></dataplat-select>
+                                                      </div>
+                                                      <div class="dp-setting-form-row">
+                                                          <p class="dp-form-row-label">Цвет некачественных данных</p>
+                                                          <input class="dp-input-color" type="color" name="title" id="nullLineColor">
+                                                      </div>
+                                                      <div class="dp-setting-form-row">
+                                                          <dataplat-checkbox value="false" text="Отобразить в легенде" id="nullLegend"></dataplat-checkbox>
+                                                      </div>
+                                                      <div class="dp-setting-form-row">
+                                                          <p class="dp-form-row-label">Наименование в легенде</p>
+                                                          <input class="dp-input" type="text" name="title" id="nullLegendName">
+                                                      </div>
+                                                  </div>
+                                              </dataplat-region> 
+                                          </div>
+                                          <div class="dp-chart-setting-region">
+                                              <dataplat-region id="region-legend" state="false" text="Навигатор" class="dp-region-max">
+                                                  <div class="dp-chart-setting-content">
+                                                      <div class="dp-setting-form-row">
+                                                          <dataplat-checkbox value="false" text="Отобразить навигатор" id="navigator"></dataplat-checkbox>
+                                                      </div>
+                                                  </div>
+                                              </dataplat-region> 
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                              <ul class='dp-vertical-tab'>
+                                  <li class='dp-vertical-tab-item'>
+                                      <button class='dp-vertical-tab-button' data-action='setting' data-active='true'>
+                                          <span class='dp-tab-button-text' data-icon='true'>
+                                              <span class='dp-tab-button-name'>
+                                                  Настройки
+                                              </span>
+                                          </span>
+                                      </button>
+                                  </li>
+                                  <li class='dp-vertical-tab-item'>
+                                      <button class='dp-vertical-tab-button' data-action='remove' data-active='true'>
+                                          <span class='dp-tab-button-text' data-icon='true'>
+                                              <span class='dp-tab-button-name'>
+                                                  Пусто
+                                              </span>
+                                          </span>
+                                      </button>
+                                  </li>
+                              </ul>
+                          </dataplat-tab>
+                      </div>
+
+                  </div>                          
+                  <div data-action="attributes" class="dp-tabs-content" data-active="false"> 
+                      <h3 class="dp-form-row-label">Контент вкладки атрибуты</h3>            
+                  </div>                                                                     
+              </div>
+          </dataplat-tab>
+      </div>
+    </div>
+    <script type="module" src="/src/dataplat.chart.ts"></script>
+    <script type="module" src="/test/test.data.ts"></script>
+    <script type="module" src="/test/test.ts"></script>
   </body>
 </html>
