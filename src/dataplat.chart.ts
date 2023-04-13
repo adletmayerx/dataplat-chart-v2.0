@@ -1,4 +1,4 @@
-import { Chart } from './core/dataplat.chart.core';
+import { Chart } from './core/dataplat.chart.core.js';
 
 customElements.define(
 	'dataplat-chart',

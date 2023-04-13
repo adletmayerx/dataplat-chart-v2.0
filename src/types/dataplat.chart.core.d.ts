@@ -33,6 +33,7 @@ interface DPChartAnnotationLine {
 	lineX: number;
 	lineY: number;
 	label?: DPChartTooltipData;
+	box?: HTMLDivElement;
 }
 
 type DPChartPoints = [pointX: number, pointY: number, x: number, y: number];

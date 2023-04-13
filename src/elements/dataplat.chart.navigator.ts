@@ -1,7 +1,7 @@
-import { Chart } from '../core/dataplat.chart.core';
+import { Chart } from '../core/dataplat.chart.core.js';
 /// <reference path="./types/main.d.ts" />
 /// <reference path="./types/core.d.ts" />
-import { css, initTypePoints } from '../helpers/dataplat.chart.helpers';
+import { css, initTypePoints } from '../helpers/dataplat.chart.helpers.js';
 
 export class ChartNavigator {
 	_chart: Chart;

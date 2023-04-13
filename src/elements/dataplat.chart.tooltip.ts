@@ -1,8 +1,8 @@
-import { Chart } from '../core/dataplat.chart.core';
+import { Chart } from '../core/dataplat.chart.core.js';
 /// <reference path="./types/core.d.ts" />
-import { ChartDate } from './dataplat.chart.date';
+import { ChartDate } from './dataplat.chart.date.js';
 
-import { css } from '../helpers/dataplat.chart.helpers';
+import { css } from '../helpers/dataplat.chart.helpers.js';
 
 export class ChartToolTip {
 	private readonly _chart: Chart;
@@ -11,10 +11,14 @@ export class ChartToolTip {
 	readonly Canvas: HTMLCanvasElement;
 
 	private _tooltip: HTMLDivElement | undefined;
+	private _annotationLabel: HTMLDivElement | undefined;
 	private _Date: ChartDate;
 
 	private _annotations: Array<DPChartAnnotationLine>;
 	private _colorAnnotations: string;
+
+	private readonly _padding: number;
+	private _container: HTMLDivElement | undefined;
 
 	constructor(chart: Chart) {
 		this._chart = chart;
@@ -26,6 +30,7 @@ export class ChartToolTip {
 
 		this._annotations = [];
 		this._colorAnnotations = '#FF0000';
+		this._padding = 50;
 	}
 
 	setStylePointCanvas() {
@@ -61,36 +66,17 @@ export class ChartToolTip {
 
 		let tooltipItems = [];
 
-		let index = 0;
-		let diff: number | null = null;
-		let point: any = [];
+		if (annotation && props) {
+			let index = this._getNearIndex(renderedData, mouseX, mouseY, props);
 
-		if (annotation) {
-			for (let i = 0; i < renderedData.data.points.length; i++) {
-				const [, , calcX, calcY] = renderedData.data.points[i];
-
-				const dx = mouseX - calcX;
-
-				if (!diff) diff = dx;
-
-				if (dx < 0) break;
-
-				if (diff > dx) {
-					diff = dx;
-					index = i;
-				}
-			}
-		}
-
-		if (annotation) {
 			tooltipItems = this._getToolTipItems(renderedData, index, true)!;
 
-			if (props) {
-				props.label = {
-					title: 'toolip',
-					items: tooltipItems
-				};
-			}
+			props.label = {
+				title: 'toolip',
+				items: tooltipItems
+			};
+
+			console.log(tooltipItems);
 		}
 
 		for (let i = 0; i < renderedData.data.points.length; i++) {
@@ -126,6 +112,7 @@ export class ChartToolTip {
 			if (k === 0) {
 				this._ctx.clearRect(0, 0, this.Canvas.width, this.Canvas.height);
 				this._drawAnnotations();
+				this._hideAnnotationLabel();
 			}
 			renderedData = this._chart._renderedData[k];
 
@@ -161,6 +148,33 @@ export class ChartToolTip {
 		return tooltipItems;
 	}
 
+	private _getNearIndex(renderedData: DPChartCalcData, mouseX: number, mouseY: number, props: DPChartAnnotationLine) {
+		let diff: number | null = null;
+		let point: any = [];
+		let index = 0;
+
+		const coordinate = props.mode === 'vertical' ? mouseX : mouseY;
+
+		for (let i = 0; i < renderedData.data.points.length; i++) {
+			const [, , calcX, calcY] = renderedData.data.points[i];
+
+			const renderCoordinate = props.mode === 'vertical' ? calcX : calcY;
+
+			const dxy = coordinate - renderCoordinate;
+
+			if (!diff) diff = dxy;
+
+			if (dxy < 0) break;
+
+			if (diff > dxy) {
+				diff = dxy;
+				index = i;
+			}
+		}
+
+		return index;
+	}
+
 	_drawXLine(x: number) {
 		this._ctx.beginPath();
 		const padding = this._chart._padding;
@@ -169,6 +183,7 @@ export class ChartToolTip {
 		this._ctx.lineTo(x + 0.5, this._chart._dpiHeight - this._chart._paddingBottom);
 		this._ctx.lineWidth = 1;
 		this._ctx.globalCompositeOperation = 'destination-over';
+		this._ctx.strokeStyle = '#212529';
 		this._ctx.stroke();
 		this._ctx.closePath();
 	}
@@ -180,6 +195,7 @@ export class ChartToolTip {
 		this._ctx.moveTo(this._chart._paddingLeft, y + 0.5);
 		this._ctx.lineTo(this._chart._viewWidth + this._chart._paddingLeft, y + 0.5);
 		this._ctx.globalCompositeOperation = 'destination-over';
+		this._ctx.strokeStyle = '#212529';
 		this._ctx.lineWidth = 1;
 		this._ctx.stroke();
 		this._ctx.closePath();
@@ -303,6 +319,8 @@ export class ChartToolTip {
 		const annotations = this._annotations;
 		if (!annotations?.length) return;
 
+		document.onmousedown = null;
+
 		const { left, top } = this.Canvas.getBoundingClientRect() as DOMRect;
 
 		const mouseX = e.clientX - left;
@@ -317,15 +335,58 @@ export class ChartToolTip {
 
 			if (model.mode === 'vertical') {
 				if (mouseX >= model.mouseX - 5 && mouseX <= model.mouseX + 5) {
-					this._show(moveY, moveX, model.label!);
+					this._showAnnotationLabelBox(moveX, moveY, model);
 				}
 			} else {
 				if (mouseY >= model.mouseY - 5 && mouseY <= model.mouseY + 5) {
-					this._show(mouseY, mouseX, model.label!);
+					this._showAnnotationLabelBox(moveX, moveY, model);
 				}
 			}
 		}
 	};
+
+	private _showAnnotationLabelBox(moveX: number, moveY: number, model: DPChartAnnotationLine) {
+		this._annotationLabel!.dataset.visible = 'true';
+
+		const { width, height } = this._getAnnotationLabelSize(this._annotationLabel!);
+
+		let x = moveX;
+		let y = moveY;
+
+		if (model.mode === 'vertical') {
+			x = moveX - width! / 2;
+			y = moveY;
+		}
+
+		this._show(y, x, model.label!, this._annotationLabel!);
+
+		document.onmousedown = (e: MouseEvent) => {
+			if (model.box) {
+				model.box.remove();
+				model.box = undefined;
+				return;
+			}
+
+			const labelBox = this._getNewAnnotationLabel(model);
+			labelBox.dataset.visible = 'true';
+
+			this._show(y, x, model.label!, labelBox);
+		};
+	}
+
+	private _getNewAnnotationLabel(model: DPChartAnnotationLine) {
+		const labelBox = this._createAnnotationLabel();
+		this._container?.append(labelBox);
+		model.box = labelBox;
+
+		return labelBox;
+	}
+
+	private _getAnnotationLabelSize(box: HTMLDivElement) {
+		const { height, width } = box.getBoundingClientRect();
+
+		return { width, height };
+	}
 
 	/**
 	 * Добавляем слушатели событий для работы tooltip
@@ -363,8 +424,16 @@ export class ChartToolTip {
 		}
 	}
 
+	public addComponents(card: HTMLDivElement) {
+		this._container = card;
+
+		card.append(this._createTooltip());
+		this._annotationLabel = this._createAnnotationLabel();
+		card.append(this._annotationLabel);
+	}
+
 	/** Создаем tooltip */
-	_createTooltip(): HTMLDivElement {
+	private _createTooltip() {
 		this._tooltip = document.createElement('div');
 		this._tooltip.classList.add('dp-chart-tooltip');
 		this._tooltip.dataset.visible = 'false';
@@ -372,18 +441,28 @@ export class ChartToolTip {
 		return this._tooltip;
 	}
 
+	private _createAnnotationLabel() {
+		const box = document.createElement('div');
+		box.classList.add('dp-chart-tooltip');
+		box.dataset.visible = 'false';
+
+		return box;
+	}
+
 	/**
 	 * Устанавливаем данные для отрисовки tooltip
 	 * @param data - Данные для отрисовки tooltip
 	 * @returns
 	 */
-	_dataBound(data: DPChartTooltipData) {
+	_dataBound(data: DPChartTooltipData, annotation?: HTMLDivElement) {
 		if (!this._tooltip) return;
+
+		const box = annotation || this._tooltip;
 
 		let list = document.createElement('ul');
 		list.classList.add('dp-chart-tooltip-list');
 
-		this._tooltip.append(list);
+		box.append(list);
 
 		let title = document.createElement('p');
 		title.classList.add('dp-chart-tooltip-text');
@@ -418,21 +497,35 @@ export class ChartToolTip {
 	 * @param data - Данные tooltip
 	 * @returns - выходит из функции если элемент tooltip отсутствует
 	 */
-	_show(top: number, left: number, data: DPChartTooltipData) {
+	_show(top: number, left: number, data: DPChartTooltipData, annotationBox?: HTMLDivElement) {
 		if (!this._tooltip) return;
 
-		const { height, width } = this._tooltip.getBoundingClientRect();
-		this._tooltip.innerHTML = '';
-		this._tooltip.removeAttribute('data-visible');
-		this._dataBound(data);
+		const box = annotationBox || this._tooltip;
 
-		this._tooltip.style.top = top - height + 'px';
-		this._tooltip.style.left = left + 30 + 'px';
+		const { height, width } = this._tooltip.getBoundingClientRect();
+
+		box.innerHTML = '';
+		box.removeAttribute('data-visible');
+
+		box.style.top = top - height + 'px';
+		box.style.left = left + this._padding + 'px';
+
+		if (annotationBox) {
+			box.style.top = top + 'px';
+			box.style.left = left + 'px';
+		}
+
+		this._dataBound(data, annotationBox);
 	}
 
 	/** Скрываем tooltip */
 	_hide() {
 		if (!this._tooltip) return;
 		this._tooltip.dataset.visible = 'false';
+	}
+
+	private _hideAnnotationLabel() {
+		if (!this._annotationLabel) return;
+		this._annotationLabel.dataset.visible = 'false';
 	}
 }

@@ -1,11 +1,11 @@
 /// <reference path="../types/dataplat.chart.d.ts" />
 /// <reference path="../types/dataplat.chart.core.d.ts" />
 
-import { ChartLegend } from '../elements/dataplat.chart.legend';
-import { ChartToolTip } from '../elements/dataplat.chart.tooltip';
-import { ChartDate } from '../elements/dataplat.chart.date';
-import { ChartNavigator } from '../elements/dataplat.chart.navigator';
-import { initTypePoints } from '../helpers/dataplat.chart.helpers';
+import { ChartLegend } from '../elements/dataplat.chart.legend.js';
+import { ChartToolTip } from '../elements/dataplat.chart.tooltip.js';
+import { ChartDate } from '../elements/dataplat.chart.date.js';
+import { ChartNavigator } from '../elements/dataplat.chart.navigator.js';
+import { initTypePoints } from '../helpers/dataplat.chart.helpers.js';
 
 export class Chart {
 	//#region properties for custom class
@@ -343,7 +343,7 @@ export class Chart {
 
 		this._Canvas.classList.add('dp-chart-canvas');
 
-		card.append(this._Tooltip._createTooltip());
+		this._Tooltip.addComponents(card);
 		card.append(this._Canvas);
 		card.append(this._Tooltip.Canvas);
 
